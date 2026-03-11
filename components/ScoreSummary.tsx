@@ -22,7 +22,9 @@ const EXERCISE_TYPE_LABELS: Record<string, string> = {
   'comparison-duel': 'Vergleichs-Duell',
   'chemistry-builder': 'Formel-Baukasten',
   'sort-challenge': 'Sortier-Challenge',
+  'synthesis-order': 'Synthese-Reihenfolge',
   'drawing': 'Zeichenaufgabe',
+  'case-study': 'Fallbeispiel',
   'open-reflection': 'Offene Reflexion',
 };
 

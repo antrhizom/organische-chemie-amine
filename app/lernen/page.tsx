@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { createSession } from '@/lib/randomizer';
 import { addResult } from '@/lib/progress';
+import { saveSession, loadSession, clearSession } from '@/lib/persistence';
 import { SessionState, ExerciseResult } from '@/lib/types';
 import RevealCard from '@/components/RevealCard';
 import ComparisonDuel from '@/components/ComparisonDuel';
@@ -10,10 +11,14 @@ import SortChallenge from '@/components/SortChallenge';
 import ChemistryBuilder from '@/components/ChemistryBuilder';
 import DrawingExercise from '@/components/DrawingExercise';
 import OpenReflection from '@/components/OpenReflection';
+import SynthesisOrder from '@/components/SynthesisOrder';
+import CaseStudy from '@/components/CaseStudy';
+import CountdownTimer from '@/components/CountdownTimer';
+import ResumeDialog from '@/components/ResumeDialog';
 import ScoreSummary from '@/components/ScoreSummary';
 import { generateCertificatePDF } from '@/components/Certificate';
 
-type Phase = 'loading' | 'reveal' | 'duels' | 'builders' | 'sort' | 'drawing' | 'reflection' | 'summary';
+type Phase = 'loading' | 'reveal' | 'duels' | 'builders' | 'sort' | 'synthesis' | 'drawing' | 'casestudy' | 'reflection' | 'summary';
 
 const PHASE_INFO: Record<Phase, { title: string; subtitle: string; icon: string; kLevel?: string }> = {
   loading: { title: '', subtitle: '', icon: '' },
@@ -41,11 +46,23 @@ const PHASE_INFO: Record<Phase, { title: string; subtitle: string; icon: string;
     icon: '📊',
     kLevel: 'K4 Analysieren',
   },
+  synthesis: {
+    title: 'Synthese-Reihenfolge',
+    subtitle: 'Ordne die Reaktionsschritte der Amin-Synthese korrekt.',
+    icon: '🧬',
+    kLevel: 'K4 Analysieren',
+  },
   drawing: {
     title: 'Zeichenaufgabe',
     subtitle: 'Zeichne die Struktur -- die KI gibt dir Feedback.',
     icon: '✏️',
     kLevel: 'K6 Erschaffen',
+  },
+  casestudy: {
+    title: 'Fallbeispiel',
+    subtitle: 'Analysiere einen chemischen Fall -- die KI bewertet nach Umfang und Tiefe.',
+    icon: '🔬',
+    kLevel: 'K5 Bewerten',
   },
   reflection: {
     title: 'Offene Reflexion',
@@ -60,7 +77,7 @@ const PHASE_INFO: Record<Phase, { title: string; subtitle: string; icon: string;
   },
 };
 
-const PHASE_ORDER: Phase[] = ['reveal', 'duels', 'builders', 'sort', 'drawing', 'reflection', 'summary'];
+const PHASE_ORDER: Phase[] = ['reveal', 'duels', 'builders', 'sort', 'synthesis', 'drawing', 'casestudy', 'reflection', 'summary'];
 
 export default function LernenPage() {
   const [session, setSession] = useState<SessionState | null>(null);
@@ -68,28 +85,99 @@ export default function LernenPage() {
   const [results, setResults] = useState<ExerciseResult[]>([]);
   const [revealedCount, setRevealedCount] = useState(0);
   const [studentName, setStudentName] = useState('');
+  const [showResumeDialog, setShowResumeDialog] = useState(false);
+  const [timeExpired, setTimeExpired] = useState(false);
   const topRef = useRef<HTMLDivElement>(null);
+  const persistedRef = useRef<ReturnType<typeof loadSession>>(null);
 
+  // Initialize session
   useEffect(() => {
     const name = localStorage.getItem('studentName') || 'Lernende/r';
     setStudentName(name);
+
+    const saved = loadSession();
+    if (saved) {
+      persistedRef.current = saved;
+      setShowResumeDialog(true);
+    } else {
+      const s = createSession();
+      s.studentName = name;
+      setSession(s);
+      setPhase('reveal');
+    }
+  }, []);
+
+  // Handle resume or restart
+  const handleResume = () => {
+    const saved = persistedRef.current;
+    if (saved) {
+      // Adjust timer: set timerStartedAt so remaining time matches
+      const adjustedSession = {
+        ...saved.session,
+        timerStartedAt: new Date(Date.now() - (saved.session.timerDurationMs - saved.timerRemainingMs)).toISOString(),
+      };
+      setSession(adjustedSession);
+      setPhase(saved.currentPhase as Phase);
+      setResults(saved.results);
+    }
+    setShowResumeDialog(false);
+  };
+
+  const handleRestart = () => {
+    clearSession();
+    const name = localStorage.getItem('studentName') || 'Lernende/r';
     const s = createSession();
     s.studentName = name;
     setSession(s);
     setPhase('reveal');
+    setResults([]);
+    setRevealedCount(0);
+    setShowResumeDialog(false);
+  };
+
+  // Save on result change
+  const handleResult = useCallback((result: ExerciseResult) => {
+    setResults((prev) => {
+      const updated = addResult(prev, result);
+      return updated;
+    });
   }, []);
 
-  const handleResult = (result: ExerciseResult) => {
-    setResults((prev) => addResult(prev, result));
-  };
+  // Persist after results or phase change
+  useEffect(() => {
+    if (session && phase !== 'loading' && phase !== 'summary') {
+      saveSession(session, phase, results);
+    }
+  }, [session, phase, results]);
+
+  // Save on beforeunload
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (session && phase !== 'loading' && phase !== 'summary') {
+        saveSession(session, phase, results);
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [session, phase, results]);
 
   const goToNextPhase = () => {
     const currentIndex = PHASE_ORDER.indexOf(phase);
     if (currentIndex < PHASE_ORDER.length - 1) {
-      setPhase(PHASE_ORDER[currentIndex + 1]);
+      const nextPhase = PHASE_ORDER[currentIndex + 1];
+      setPhase(nextPhase);
       topRef.current?.scrollIntoView({ behavior: 'smooth' });
+      if (nextPhase === 'summary') {
+        clearSession();
+      }
     }
   };
+
+  const handleTimeUp = useCallback(() => {
+    setTimeExpired(true);
+    setPhase('summary');
+    clearSession();
+  }, []);
 
   const currentPhaseIndex = PHASE_ORDER.indexOf(phase);
   const progressPercent = phase === 'summary' ? 100 : Math.round((currentPhaseIndex / (PHASE_ORDER.length - 1)) * 100);
@@ -97,16 +185,45 @@ export default function LernenPage() {
   if (!session || phase === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-3 border-indigo-200 border-t-indigo-600 rounded-full" />
+        {showResumeDialog && persistedRef.current ? (
+          <ResumeDialog
+            persisted={persistedRef.current}
+            onResume={handleResume}
+            onRestart={handleRestart}
+          />
+        ) : (
+          <div className="animate-spin w-8 h-8 border-3 border-indigo-200 border-t-indigo-600 rounded-full" />
+        )}
       </div>
     );
   }
 
   const info = PHASE_INFO[phase];
 
+  // Button labels for next phase
+  const nextPhaseLabels: Partial<Record<Phase, string>> = {
+    reveal: 'Weiter zu den Duellen →',
+    duels: 'Weiter zum Baukasten →',
+    builders: 'Weiter zur Sortierung →',
+    sort: 'Weiter zur Synthese →',
+    synthesis: 'Weiter zum Zeichnen →',
+    drawing: 'Weiter zum Fallbeispiel →',
+    casestudy: 'Weiter zur Reflexion →',
+    reflection: 'Zur Zusammenfassung →',
+  };
+
   return (
     <main className="min-h-screen pb-20">
       <div ref={topRef} />
+
+      {/* Resume dialog overlay */}
+      {showResumeDialog && persistedRef.current && (
+        <ResumeDialog
+          persisted={persistedRef.current}
+          onResume={handleResume}
+          onRestart={handleRestart}
+        />
+      )}
 
       {/* Progress bar */}
       <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
@@ -120,6 +237,13 @@ export default function LernenPage() {
               />
             </div>
             <span className="text-xs font-mono text-gray-400">{progressPercent}%</span>
+            {phase !== 'summary' && (
+              <CountdownTimer
+                startedAt={session.timerStartedAt}
+                durationMs={session.timerDurationMs}
+                onTimeUp={handleTimeUp}
+              />
+            )}
           </div>
           {/* Phase indicators */}
           <div className="flex justify-between mt-2">
@@ -179,7 +303,7 @@ export default function LernenPage() {
                 disabled={revealedCount < session.revealCards.length}
                 className="px-8 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
-                Weiter zu den Duellen →
+                {nextPhaseLabels[phase]}
               </button>
             </div>
           </div>
@@ -197,7 +321,7 @@ export default function LernenPage() {
                 disabled={results.filter((r) => r.exerciseType === 'comparison-duel').length < session.comparisonDuels.length}
                 className="px-8 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
-                Weiter zum Baukasten →
+                {nextPhaseLabels[phase]}
               </button>
             </div>
           </div>
@@ -215,7 +339,7 @@ export default function LernenPage() {
                 disabled={results.filter((r) => r.exerciseType === 'chemistry-builder').length < session.chemistryBuilders.length}
                 className="px-8 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
-                Weiter zur Sortierung →
+                {nextPhaseLabels[phase]}
               </button>
             </div>
           </div>
@@ -231,7 +355,23 @@ export default function LernenPage() {
                 disabled={!results.some((r) => r.exerciseType === 'sort-challenge')}
                 className="px-8 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
-                Weiter zum Zeichnen →
+                {nextPhaseLabels[phase]}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* PHASE: Synthesis Order */}
+        {phase === 'synthesis' && (
+          <div className="space-y-4">
+            <SynthesisOrder synthesis={session.synthesisOrder} onResult={handleResult} />
+            <div className="text-center pt-4">
+              <button
+                onClick={goToNextPhase}
+                disabled={!results.some((r) => r.exerciseType === 'synthesis-order')}
+                className="px-8 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                {nextPhaseLabels[phase]}
               </button>
             </div>
           </div>
@@ -247,7 +387,23 @@ export default function LernenPage() {
                 disabled={!results.some((r) => r.exerciseType === 'drawing')}
                 className="px-8 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
-                Weiter zur Reflexion →
+                {nextPhaseLabels[phase]}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* PHASE: Case Study */}
+        {phase === 'casestudy' && (
+          <div className="space-y-4">
+            <CaseStudy caseStudy={session.caseStudy} onResult={handleResult} />
+            <div className="text-center pt-4">
+              <button
+                onClick={goToNextPhase}
+                disabled={!results.some((r) => r.exerciseType === 'case-study')}
+                className="px-8 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                {nextPhaseLabels[phase]}
               </button>
             </div>
           </div>
@@ -263,7 +419,7 @@ export default function LernenPage() {
                 disabled={!results.some((r) => r.exerciseType === 'open-reflection')}
                 className="px-8 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-medium rounded-lg hover:from-indigo-700 hover:to-purple-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-lg shadow-indigo-200"
               >
-                Zur Zusammenfassung →
+                {nextPhaseLabels[phase]}
               </button>
             </div>
           </div>
@@ -271,11 +427,19 @@ export default function LernenPage() {
 
         {/* PHASE: Summary */}
         {phase === 'summary' && (
-          <ScoreSummary
-            results={results}
-            studentName={studentName}
-            onDownloadCertificate={() => generateCertificatePDF(studentName, results)}
-          />
+          <div>
+            {timeExpired && (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+                <p className="text-sm text-amber-800 font-medium">⏱️ Die Zeit ist abgelaufen.</p>
+                <p className="text-xs text-amber-700 mt-1">Hier sind deine bisherigen Ergebnisse. Du kannst den Lernpfad jederzeit erneut starten.</p>
+              </div>
+            )}
+            <ScoreSummary
+              results={results}
+              studentName={studentName}
+              onDownloadCertificate={() => generateCertificatePDF(studentName, results)}
+            />
+          </div>
         )}
       </div>
     </main>

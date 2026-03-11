@@ -41,9 +41,14 @@ export default function WelcomePage() {
                 <li className="flex gap-2"><span>🔍</span><span><strong>Aufdeckkarten</strong> -- Kernkonzepte aktiv wiederholen</span></li>
                 <li className="flex gap-2"><span>⚔️</span><span><strong>Vergleichs-Duelle</strong> -- Welches Amin ist basischer?</span></li>
                 <li className="flex gap-2"><span>🧩</span><span><strong>Formel-Baukasten</strong> -- Moleküle vervollständigen</span></li>
-                <li className="flex gap-2"><span>📊</span><span><strong>Sortier-Challenge</strong> -- Basizitätsreihen ordnen</span></li>
+                <li className="flex gap-2"><span>📊</span><span><strong>Sortier- & Synthese-Challenge</strong> -- Reihenfolgen ordnen</span></li>
+                <li className="flex gap-2"><span>🔬</span><span><strong>Fallbeispiel</strong> -- Analyse mit KI-Bewertung</span></li>
                 <li className="flex gap-2"><span>✏️</span><span><strong>Zeichnen & Reflektieren</strong> -- KI gibt Feedback</span></li>
               </ul>
+              <div className="mt-3 pt-3 border-t border-amber-200 flex items-center gap-2 text-xs text-amber-600">
+                <span>⏱️</span>
+                <span>Zeitrahmen: ca. 60 Minuten · Dein Fortschritt wird automatisch gespeichert.</span>
+              </div>
             </div>
 
             {/* Name input */}

@@ -6,6 +6,8 @@ import {
   ChemistryBuilderData,
   DrawingExerciseData,
   OpenReflectionData,
+  SynthesisOrderData,
+  CaseStudyData,
 } from '../types';
 
 // ========== REVEAL CARDS (K1 - Erinnern) ==========
@@ -313,6 +315,222 @@ Gute Antwort: Nennt die Reihenfolge der Extraktionen, erklärt warum HCl das Ami
   },
 ];
 
+// ========== SYNTHESIS ORDERS (K4 - Analysieren) ==========
+
+const synthesisOrders: SynthesisOrderData[] = [
+  {
+    id: 'so-1',
+    instruction: 'Bringe die Schritte der Gabriel-Synthese in die richtige Reihenfolge.',
+    synthesisName: 'Gabriel-Synthese',
+    steps: [
+      { id: 'gab-1', label: 'Phthalimid-Kaliumsalz herstellen', description: 'Phthalimid + KOH → Kalium-Phthalimid' },
+      { id: 'gab-2', label: 'Alkylierung mit Halogenalkan', description: 'K-Phthalimid + R-X → N-Alkylphthalimid' },
+      { id: 'gab-3', label: 'Hydrolyse mit Hydrazin', description: 'N-Alkylphthalimid + N₂H₄ → primäres Amin + Phthalhydrazid' },
+      { id: 'gab-4', label: 'Primäres Amin isolieren', description: 'Reines R-NH₂ wird abgetrennt' },
+    ],
+    correctOrder: ['gab-1', 'gab-2', 'gab-3', 'gab-4'],
+    explanation: 'Die Gabriel-Synthese liefert selektiv primäre Amine ohne Überalkylierung. Das Phthalimid schützt die Aminogruppe vor Folgereaktionen.',
+  },
+  {
+    id: 'so-2',
+    instruction: 'Bringe die Schritte der reduktiven Aminierung in die richtige Reihenfolge.',
+    synthesisName: 'Reduktive Aminierung',
+    steps: [
+      { id: 'ra-1', label: 'Aldehyd/Keton mit Amin mischen', description: 'R-CHO + R\'NH₂ → Gemisch' },
+      { id: 'ra-2', label: 'Imin-Bildung (Schiff-Base)', description: 'Kondensation unter Wasserabspaltung → R-CH=NR\'' },
+      { id: 'ra-3', label: 'Selektive Reduktion mit NaBH₃CN', description: 'Imin wird zum Amin reduziert, Aldehyd bleibt unberührt' },
+      { id: 'ra-4', label: 'Sekundäres Amin isolieren', description: 'R-CH₂-NHR\' wird erhalten' },
+    ],
+    correctOrder: ['ra-1', 'ra-2', 'ra-3', 'ra-4'],
+    explanation: 'Die reduktive Aminierung ist sehr vielseitig: Man kann primäre, sekundäre oder tertiäre Amine gezielt herstellen. NaBH₃CN reduziert selektiv das Imin, nicht die Carbonylverbindung.',
+  },
+  {
+    id: 'so-3',
+    instruction: 'Bringe die Schritte der Anilin-Synthese aus Benzol in die richtige Reihenfolge.',
+    synthesisName: 'Nitroreduktion (Anilin-Synthese)',
+    steps: [
+      { id: 'nr-1', label: 'Nitrierung von Benzol', description: 'Benzol + HNO₃/H₂SO₄ → Nitrobenzol' },
+      { id: 'nr-2', label: 'Katalytische Reduktion', description: 'Nitrobenzol + 3 H₂ (Pd/C) → Anilin + 2 H₂O' },
+      { id: 'nr-3', label: 'Anilin isolieren', description: 'C₆H₅NH₂ wird durch Destillation gereinigt' },
+    ],
+    correctOrder: ['nr-1', 'nr-2', 'nr-3'],
+    explanation: 'Die Nitroreduktion ist die wichtigste industrielle Methode zur Anilin-Herstellung. 97% des weltweit produzierten Nitrobenzols wird so zu Anilin umgewandelt.',
+  },
+  {
+    id: 'so-4',
+    instruction: 'Bringe die Schritte der direkten Alkylierung in die richtige Reihenfolge und erkenne das Problem.',
+    synthesisName: 'Direkte Alkylierung (mit Überalkylierung)',
+    steps: [
+      { id: 'da-1', label: 'NH₃ + R-X → primäres Amin + HX', description: 'Ammoniak reagiert mit Halogenalkan' },
+      { id: 'da-2', label: 'R-NH₂ + R-X → sekundäres Amin + HX', description: 'Primäres Amin reagiert weiter (nukleophiler als NH₃!)' },
+      { id: 'da-3', label: 'R₂NH + R-X → tertiäres Amin + HX', description: 'Sekundäres Amin reagiert weiter' },
+      { id: 'da-4', label: 'R₃N + R-X → quartäres Ammoniumsalz', description: 'Auch tertiäres Amin reagiert noch weiter' },
+    ],
+    correctOrder: ['da-1', 'da-2', 'da-3', 'da-4'],
+    explanation: 'Das Grundproblem der direkten Alkylierung: Jedes gebildete Amin ist nukleophiler als das vorherige und reagiert bevorzugt weiter. Man erhält immer ein Gemisch aller Substitutionsgrade. Nur ein grosser Überschuss an NH₃ kann dies teilweise unterdrücken.',
+  },
+  {
+    id: 'so-5',
+    instruction: 'Bringe die Schritte der Nitrilreduktion in die richtige Reihenfolge.',
+    synthesisName: 'Nitrilreduktion',
+    steps: [
+      { id: 'nc-1', label: 'Halogenalkan mit NaCN umsetzen', description: 'R-X + NaCN → R-CN + NaX (SN2-Reaktion)' },
+      { id: 'nc-2', label: 'Nitril mit LiAlH₄ reduzieren', description: 'R-CN + LiAlH₄ → R-CH₂-NH₂' },
+      { id: 'nc-3', label: 'Primäres Amin mit verlängerter Kette isolieren', description: 'R-CH₂-NH₂ (ein C-Atom mehr als R-X)' },
+    ],
+    correctOrder: ['nc-1', 'nc-2', 'nc-3'],
+    explanation: 'Die Nitrilreduktion verlängert die Kohlenstoffkette um ein C-Atom und liefert selektiv ein primäres Amin. Sie ist komplementär zur Gabriel-Synthese.',
+  },
+];
+
+// ========== CASE STUDIES (K5 - Bewerten, KI bewertet Antworten) ==========
+
+const caseStudies: CaseStudyData[] = [
+  {
+    id: 'cs-1',
+    title: 'Unbekanntes Amin identifizieren',
+    scenario: `In deinem Praktikum erhältst du eine Probe eines unbekannten Amins. Du führst folgende Tests durch:
+
+• Die Substanz ist bei Raumtemperatur flüssig und wasserlöslich.
+• Der gemessene pKₛ-Wert des konjugierten Ammonium-Ions beträgt 10.73.
+• Bei der Reaktion mit salpetriger Säure (HNO₂) entsteht ein Alkohol und Stickstoffgas (N₂).
+• Die molare Masse beträgt ca. 45 g/mol.
+
+Analysiere die Daten und identifiziere das Amin.`,
+    questions: [
+      {
+        id: 'cs-1-q1',
+        prompt: 'Handelt es sich um ein primäres, sekundäres oder tertiäres Amin? Begründe anhand der experimentellen Daten.',
+        hint: 'Welcher Test unterscheidet primäre von sekundären und tertiären Aminen?',
+        expectedTopics: ['primäres Amin', 'HNO₂-Test', 'N₂-Entwicklung', 'primäre Amine reagieren mit HNO₂ unter Stickstoffabspaltung'],
+      },
+      {
+        id: 'cs-1-q2',
+        prompt: 'Ist es ein Alkyl- oder Arylamin? Welche Daten stützen deine Einschätzung?',
+        hint: 'Vergleiche den pKₛ-Wert mit typischen Werten für Alkyl- und Arylamine.',
+        expectedTopics: ['Alkylamin', 'pKₛ ≈ 10.7 typisch für Alkylamine', 'Arylamine haben pKₛ < 5', 'wasserlöslich deutet auf niedrige Molmasse'],
+      },
+      {
+        id: 'cs-1-q3',
+        prompt: 'Welches konkrete Amin könnte es sein? Begründe mit der molaren Masse.',
+        hint: 'Berechne die Molmasse möglicher primärer Alkylamine.',
+        expectedTopics: ['Ethylamin', 'C₂H₅NH₂', 'M = 45.08 g/mol', '2·12 + 7·1 + 14 = 45'],
+      },
+    ],
+    aiContext: `Kontext: Es handelt sich um Ethylamin (C₂H₅NH₂, M = 45.08 g/mol).
+Begründung:
+- Primäres Amin: HNO₂-Test mit N₂-Entwicklung ist charakteristisch für primäre Amine (sekundäre bilden Nitrosamine, tertiäre reagieren nicht mit HNO₂).
+- Alkylamin: pKₛ = 10.73 ist typisch für Alkylamine (Arylamine wie Anilin haben pKₛ ≈ 4.6).
+- Ethylamin: M(CH₃CH₂NH₂) = 2×12 + 7×1 + 14 = 45 g/mol. Methylamin (M=31) wäre zu leicht, Propylamin (M=59) zu schwer.
+Bewerte nach: 1) Korrekte Zuordnung primär/sekundär/tertiär, 2) Richtige Interpretation der pKₛ-Werte, 3) Korrekte Berechnung der Molmasse, 4) Fachsprachliche Genauigkeit.`,
+  },
+  {
+    id: 'cs-2',
+    title: 'Syntheseplanung: Selektive Amin-Herstellung',
+    scenario: `Du arbeitest in einem Pharmaunternehmen und sollst Benzylamin (C₆H₅CH₂NH₂) in grösserer Menge herstellen. Dein Vorgesetzter schlägt vor, einfach Benzylbromid (C₆H₅CH₂Br) mit einem grossen Überschuss Ammoniak umzusetzen.
+
+Du weisst aus dem Unterricht, dass es verschiedene Synthesemethoden für primäre Amine gibt:
+• Direkte Alkylierung
+• Gabriel-Synthese
+• Nitrilreduktion
+• Reduktive Aminierung
+
+Beurteile den Vorschlag und empfehle die beste Methode.`,
+    questions: [
+      {
+        id: 'cs-2-q1',
+        prompt: 'Warum ist der Vorschlag der direkten Alkylierung problematisch? Erkläre das Hauptproblem.',
+        hint: 'Was passiert mit dem primären Amin, sobald es gebildet wird?',
+        expectedTopics: ['Überalkylierung', 'Folgereaktionen', 'primäres Amin nukleophiler als NH₃', 'Gemisch aus primär/sekundär/tertiär', 'quartäres Ammoniumsalz'],
+      },
+      {
+        id: 'cs-2-q2',
+        prompt: 'Welche Synthesemethode würdest du empfehlen und warum? Beschreibe die Schritte.',
+        hint: 'Welche Methode liefert selektiv ein primäres Amin?',
+        expectedTopics: ['Gabriel-Synthese', 'Phthalimid', 'selektiv primäre Amine', 'keine Überalkylierung', 'alternativ Nitrilreduktion'],
+      },
+    ],
+    aiContext: `Kontext: Benzylamin-Herstellung
+- Direkte Alkylierung ist problematisch: C₆H₅CH₂Br + NH₃ → C₆H₅CH₂NH₂, aber das Produkt ist nukleophiler als NH₃ und reagiert weiter zu Di- und Tribenzylamin.
+- Gabriel-Synthese wäre ideal: Phthalimid-K + C₆H₅CH₂Br → N-Benzylphthalimid → Hydrolyse → reines Benzylamin. Keine Überalkylierung möglich.
+- Nitrilreduktion: C₆H₅CH₂Br + NaCN → C₆H₅CH₂CN → Reduktion → C₆H₅CH₂CH₂NH₂ (aber Achtung: dies verlängert die Kette um 1 C!).
+- Reduktive Aminierung: Benzaldehyd + NH₃ → Imin → Reduktion → Benzylamin. Auch möglich.
+Bewerte nach: 1) Verständnis des Überalkylierungsproblems, 2) Begründete Methodenwahl, 3) Korrekte Beschreibung der Syntheseschritte, 4) Umfang und Tiefe der Analyse.`,
+  },
+  {
+    id: 'cs-3',
+    title: 'Trennproblem: Säure-Base-Extraktion',
+    scenario: `Im Labor hast du ein Gemisch aus drei Substanzen, die du voneinander trennen musst:
+
+1. Toluol (C₆H₅CH₃) -- ein neutraler Kohlenwasserstoff
+2. Benzoesäure (C₆H₅COOH) -- eine organische Säure
+3. p-Toluidin (CH₃-C₆H₄-NH₂) -- ein aromatisches Amin
+
+Alle drei Substanzen sind in Diethylether löslich, aber unterscheiden sich in ihren Säure-Base-Eigenschaften.
+
+Beschreibe ein Trennverfahren basierend auf Säure-Base-Extraktion.`,
+    questions: [
+      {
+        id: 'cs-3-q1',
+        prompt: 'Wie würdest du zuerst das Amin (p-Toluidin) aus dem Gemisch isolieren? Beschreibe den Vorgang und die chemische Reaktion.',
+        hint: 'Amine sind Basen -- wie kannst du sie wasserlöslich machen?',
+        expectedTopics: ['HCl-Extraktion', 'Protonierung', 'Ammoniumsalz', 'wasserlöslich', 'wässrige Phase', 'NaOH zum Freisetzen'],
+      },
+      {
+        id: 'cs-3-q2',
+        prompt: 'Wie trennst du anschliessend die Benzoesäure vom Toluol? Beschreibe den vollständigen Ablauf bis zur Isolierung aller drei reinen Substanzen.',
+        hint: 'Benzoesäure reagiert als Säure mit Basen.',
+        expectedTopics: ['NaOH-Extraktion', 'Natriumbenzoat wasserlöslich', 'Ansäuern mit HCl', 'Benzoesäure fällt aus', 'Toluol bleibt in Etherphase', 'Ether abdestillieren'],
+      },
+    ],
+    aiContext: `Kontext (Auftrag 25 -- Isolierung von Aminen):
+Korrektes Trennverfahren:
+1. Gemisch in Diethylether lösen
+2. Mit verd. HCl extrahieren: p-Toluidin (Base) wird protoniert → CH₃-C₆H₄-NH₃⁺ Cl⁻ geht in wässrige Phase. Benzoesäure und Toluol bleiben im Ether.
+3. Wässrige Phase mit NaOH versetzen → p-Toluidin wird freigesetzt (Niederschlag), abfiltrieren.
+4. Etherphase mit verd. NaOH extrahieren: Benzoesäure reagiert → C₆H₅COO⁻ Na⁺ geht in wässrige Phase. Toluol bleibt im Ether.
+5. Wässrige Phase mit HCl ansäuern → Benzoesäure fällt aus, abfiltrieren.
+6. Etherphase enthält reines Toluol → Ether abdestillieren.
+Bewerte nach: 1) Korrekte Reihenfolge der Extraktionsschritte, 2) Verständnis der Protonierung/Deprotonierung, 3) Kenntnis der Löslichkeitsunterschiede, 4) Umfang und chemische Tiefe der Erklärung.`,
+  },
+  {
+    id: 'cs-4',
+    title: 'Basizitäts-Rätsel: Struktur-Eigenschafts-Beziehung',
+    scenario: `Dir liegen vier aromatische Amine vor, deren pKₛ-Werte des konjugierten Ammonium-Ions gemessen wurden:
+
+| Verbindung | pKₛ-Wert |
+|---|---|
+| Verbindung A: Anilin (C₆H₅NH₂) | 4.60 |
+| Verbindung B: p-Methoxyanilin (CH₃O-C₆H₄-NH₂) | 5.36 |
+| Verbindung C: p-Nitroanilin (O₂N-C₆H₄-NH₂) | 1.00 |
+| Verbindung D: p-Methylanilin (CH₃-C₆H₄-NH₂) | 5.08 |
+
+Analysiere die Struktur-Eigenschafts-Beziehungen.`,
+    questions: [
+      {
+        id: 'cs-4-q1',
+        prompt: 'Ordne die vier Verbindungen nach steigender Basizität und erkläre, warum diese Reihenfolge zustande kommt. Beziehe dich dabei auf die elektronischen Effekte der Substituenten.',
+        hint: 'Welche Substituenten sind Elektronendonoren (+I/+M), welche sind Akzeptoren (-I/-M)?',
+        expectedTopics: ['p-Nitroanilin schwächste Base', '-M-Effekt der NO₂-Gruppe', '+I-Effekt von CH₃', '+M-Effekt von OCH₃', 'Elektronendichte am Stickstoff', 'Mesomerie', 'Reihenfolge C < A < D < B'],
+      },
+      {
+        id: 'cs-4-q2',
+        prompt: 'Warum ist der Unterschied zwischen Anilin (4.60) und p-Nitroanilin (1.00) so viel grösser als zwischen Anilin (4.60) und p-Methylanilin (5.08)? Erkläre den Mechanismus.',
+        hint: 'Vergleiche den induktiven Effekt von CH₃ mit dem mesomeren Effekt von NO₂.',
+        expectedTopics: ['NO₂ hat starken -M-Effekt', 'direkte Konjugation mit NH₂', 'CH₃ hat nur schwachen +I-Effekt', 'Mesomerie stärker als Induktion', 'Elektronenpaar wird in NO₂ delokalisiert'],
+      },
+    ],
+    aiContext: `Kontext: Basizität substituierter Aniline (Auftrag 24).
+Richtige Reihenfolge steigender Basizität: p-Nitroanilin (1.00) < Anilin (4.60) < p-Methylanilin (5.08) < p-Methoxyanilin (5.36).
+Erklärung:
+- NO₂ in para: Starker -M-Effekt. Die NO₂-Gruppe steht in direkter Konjugation mit der NH₂-Gruppe über den aromatischen Ring. Das Elektronenpaar am N wird stark in Richtung NO₂ delokalisiert → drastische Basizitätsabnahme.
+- CH₃ in para: Schwacher +I-Effekt. Erhöht die Elektronendichte am Ring leicht → moderate Basizitätserhöhung.
+- OCH₃ in para: +M-Effekt. Das freie Elektronenpaar am Sauerstoff erhöht die Elektronendichte im Ring → stärkste Basizitätserhöhung unter den gezeigten Substituenten.
+- Unterschied NO₂ vs. CH₃: Mesomere Effekte (-M) sind viel stärker als induktive (+I), besonders in para-Position, wo direkte Konjugation möglich ist.
+Bewerte nach: 1) Korrekte Reihenfolge, 2) Verständnis der elektronischen Effekte, 3) Unterscheidung Mesomerie vs. Induktion, 4) Umfang und Tiefe der Analyse.`,
+  },
+];
+
 // ========== EXPORT ==========
 
 export const contentPool: ContentPool = {
@@ -322,4 +540,6 @@ export const contentPool: ContentPool = {
   chemistryBuilders,
   drawingExercises,
   openReflections,
+  synthesisOrders,
+  caseStudies,
 };

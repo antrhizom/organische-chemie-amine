@@ -55,6 +55,34 @@ export interface OpenReflectionData {
   hint?: string;
 }
 
+// ---- Case Study (fest programmiert, KI bewertet Antworten) ----
+
+export interface CaseStudyData {
+  id: string;
+  title: string;
+  scenario: string;
+  questions: CaseStudyQuestion[];
+  aiContext: string; // Fachkontext für KI-Bewertung
+}
+
+export interface CaseStudyQuestion {
+  id: string;
+  prompt: string;
+  hint?: string;
+  expectedTopics: string[]; // Schlüsselkonzepte für KI-Bewertung
+}
+
+// ---- Synthesis Order (K4) ----
+
+export interface SynthesisOrderData {
+  id: string;
+  instruction: string;
+  synthesisName: string;
+  steps: { id: string; label: string; description?: string }[];
+  correctOrder: string[];
+  explanation: string;
+}
+
 // ---- Evaluation Types ----
 
 export interface ExerciseResult {
@@ -73,9 +101,13 @@ export interface SessionState {
   chemistryBuilders: ChemistryBuilderData[];
   drawingExercise: DrawingExerciseData;
   openReflection: OpenReflectionData;
+  synthesisOrder: SynthesisOrderData;
+  caseStudy: CaseStudyData;
   results: ExerciseResult[];
   studentName: string;
   startedAt: string;
+  timerStartedAt: string;
+  timerDurationMs: number;
 }
 
 // ---- Content Pool ----
@@ -87,4 +119,6 @@ export interface ContentPool {
   chemistryBuilders: ChemistryBuilderData[];
   drawingExercises: DrawingExerciseData[];
   openReflections: OpenReflectionData[];
+  synthesisOrders: SynthesisOrderData[];
+  caseStudies: CaseStudyData[];
 }
