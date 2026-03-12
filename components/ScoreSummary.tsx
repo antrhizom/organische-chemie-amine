@@ -26,7 +26,6 @@ const EXERCISE_TYPE_LABELS: Record<string, string> = {
   'drawing': 'Zeichenaufgabe',
   'case-study': 'Fallbeispiel',
   'open-reflection': 'Offene Reflexion',
-  'true-false': 'Richtig/Falsch',
 };
 
 export default function ScoreSummary({ results, studentName, onDownloadCertificate }: Props) {
