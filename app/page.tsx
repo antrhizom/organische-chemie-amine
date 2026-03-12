@@ -7,10 +7,10 @@ export default function WelcomePage() {
   const [name, setName] = useState('');
   const router = useRouter();
 
-  const handleStart = () => {
+  const handleStart = (path: string) => {
     if (name.trim()) {
       localStorage.setItem('studentName', name.trim());
-      router.push('/lernen');
+      router.push(path);
     }
   };
 
@@ -61,20 +61,39 @@ export default function WelcomePage() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleStart()}
+                onKeyDown={(e) => e.key === 'Enter' && handleStart('/lernen')}
                 placeholder="Vor- und Nachname"
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               />
             </div>
 
-            {/* Start button */}
-            <button
-              onClick={handleStart}
-              disabled={!name.trim()}
-              className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-700 hover:to-purple-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-indigo-200"
-            >
-              Lernpfad starten
-            </button>
+            {/* Start buttons */}
+            <div className="space-y-3">
+              <button
+                onClick={() => handleStart('/lernen')}
+                disabled={!name.trim()}
+                className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-700 hover:to-purple-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-indigo-200"
+              >
+                Lernpfad starten
+              </button>
+
+              <div className="relative flex items-center gap-3">
+                <div className="flex-1 h-px bg-gray-200" />
+                <span className="text-xs text-gray-400">oder</span>
+                <div className="flex-1 h-px bg-gray-200" />
+              </div>
+
+              <button
+                onClick={() => handleStart('/pruefungsvorbereitung')}
+                disabled={!name.trim()}
+                className="w-full py-3.5 bg-white text-indigo-700 font-semibold rounded-xl border-2 border-indigo-200 hover:border-indigo-400 hover:bg-indigo-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200"
+              >
+                Prüfungsvorbereitung starten
+              </button>
+              <p className="text-xs text-gray-400 text-center">
+                Prüfungsnahes Niveau: Synthesen, Nomenklatur, Berechnungen & mehr. 90 Min.
+              </p>
+            </div>
 
             <p className="text-xs text-gray-400 text-center">
               Jeder Durchgang ist etwas anders -- durch zufällige Aufgabenauswahl.

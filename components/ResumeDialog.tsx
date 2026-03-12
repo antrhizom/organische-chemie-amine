@@ -1,15 +1,23 @@
 'use client';
 
-import { PersistedSession } from '@/lib/persistence';
+import { ExerciseResult } from '@/lib/types';
+
+interface PersistedData {
+  currentPhase: string;
+  results: ExerciseResult[];
+  timerRemainingMs: number;
+  savedAt: string;
+}
 
 interface Props {
-  persisted: PersistedSession;
+  persisted: PersistedData;
   onResume: () => void;
   onRestart: () => void;
 }
 
 const PHASE_NAMES: Record<string, string> = {
   reveal: 'Aufdeckkarten',
+  truefalse: 'Richtig/Falsch',
   duels: 'Vergleichs-Duelle',
   builders: 'Formel-Baukasten',
   sort: 'Sortier-Challenge',

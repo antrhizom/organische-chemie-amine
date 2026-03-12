@@ -18,7 +18,7 @@ const revealCards: RevealCardData[] = [
     category: 'Grundlagen',
     question: 'Warum sind Amine basisch?',
     answer:
-      'Der Stickstoff verfügt über ein freies Elektronenpaar. Stickstoff ist weniger elektronegativ als Sauerstoff, weshalb Amine eine grössere Neigung als Alkohole haben, mit einem Proton zu reagieren.',
+      'Amine sind basisch, weil der Stickstoff ein freies Elektronenpaar besitzt, das ein Proton aufnehmen kann. Dieses Elektronenpaar ist bei Stickstoff weniger stark gebunden als bei Sauerstoff, weshalb Amine leichter protoniert werden als z.\u00A0B. Alkohole.',
     hint: 'Denke an die Elektronegativität von N vs. O',
   },
   {
@@ -26,14 +26,14 @@ const revealCards: RevealCardData[] = [
     category: 'Induktiver Effekt',
     question: 'Warum ist Methylamin basischer als Ammoniak?',
     answer:
-      'Die Methylgruppe ist ein Elektronendonor (+I-Effekt) und erhöht die Elektronendichte des freien Elektronenpaares am Stickstoff. Dadurch kann das Elektronenpaar leichter ein Proton angreifen.',
+      'Die Methylgruppe ist ein Elektronendonor (+I-Effekt) und erhöht die Elektronendichte am Stickstoff. Dadurch kann das freie Elektronenpaar leichter ein Proton aufnehmen (höhere Basizität).',
   },
   {
     id: 'rc-3',
     category: 'Sterische Hinderung',
     question: 'Warum sind tertiäre Amine nicht basischer als sekundäre, obwohl sie drei Alkylgruppen tragen?',
     answer:
-      'Tertiäre Amine sind sterisch gehindert: Die drei Alkylgruppen behindern den Zutritt zum freien Elektronenpaar, sodass ein H⁺ nicht so leicht angreifen kann.',
+      'Zwei Gründe: (1) Sterische Hinderung – die drei Alkylgruppen behindern den Zutritt eines Protons zum freien Elektronenpaar. (2) Schlechtere Solvatation – das protonierte tertiäre Ammonium-Ion wird in Wasser weniger gut durch Wasserstoffbrücken stabilisiert als sekundäre oder primäre.',
   },
   {
     id: 'rc-4',
@@ -83,7 +83,7 @@ const comparisonDuels: ComparisonDuelData[] = [
     compoundB: { name: 'Trimethylamin', formula: '(CH₃)₃N' },
     correctAnswer: 'A',
     property: 'basischer',
-    explanation: 'Trotz drei Methylgruppen ist Trimethylamin wegen sterischer Hinderung weniger basisch. pKₛ = 10.64 vs. 9.79.',
+    explanation: 'Trotz drei Methylgruppen ist Trimethylamin in Wasser weniger basisch – wegen sterischer Hinderung und schlechterer Solvatation des protonierten Ammonium-Ions. pKₛ = 10.64 vs. 9.79.',
   },
   {
     id: 'cd-4',

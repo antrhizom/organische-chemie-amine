@@ -122,3 +122,49 @@ export interface ContentPool {
   synthesisOrders: SynthesisOrderData[];
   caseStudies: CaseStudyData[];
 }
+
+// ---- True/False Quiz (Prüfungsvorbereitung) ----
+
+export interface TrueFalseStatement {
+  id: string;
+  statement: string;
+  isTrue: boolean;
+  explanation: string;
+}
+
+export interface TrueFalseQuizData {
+  id: string;
+  instruction: string;
+  statements: TrueFalseStatement[];
+}
+
+// ---- Exam Content Pool ----
+
+export interface ExamContentPool {
+  revealCards: RevealCardData[];
+  trueFalseQuizzes: TrueFalseQuizData[];
+  comparisonDuels: ComparisonDuelData[];
+  sortChallenges: SortChallengeData[];
+  chemistryBuilders: ChemistryBuilderData[];
+  synthesisOrders: SynthesisOrderData[];
+  openReflections: OpenReflectionData[];
+  caseStudies: CaseStudyData[];
+}
+
+// ---- Exam Session State ----
+
+export interface ExamSessionState {
+  revealCards: RevealCardData[];
+  trueFalseQuizzes: TrueFalseQuizData[];
+  comparisonDuels: ComparisonDuelData[];
+  sortChallenges: SortChallengeData[];
+  chemistryBuilders: ChemistryBuilderData[];
+  synthesisOrder: SynthesisOrderData;
+  openReflections: OpenReflectionData[];
+  caseStudies: CaseStudyData[];
+  results: ExerciseResult[];
+  studentName: string;
+  startedAt: string;
+  timerStartedAt: string;
+  timerDurationMs: number;
+}
